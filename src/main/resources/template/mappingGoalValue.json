@@ -1,0 +1,18 @@
+{
+  "mappings": {
+    "properties": {
+      "value_id": {
+        "type": "keyword"
+      },
+      "value_name": {
+        "type": "text"
+      },
+      "join_field": {
+        "type": "join",
+        "relations": {
+          "goal_value_parent": "goal_value_child"
+        }
+      }
+    }
+  }
+}
