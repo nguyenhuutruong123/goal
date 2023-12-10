@@ -1,0 +1,3 @@
+type Query {
+  getParentGoal(filter: SearchParentGoalFilter!, page: PageBodyIn!): ParentGoalResponse
+}

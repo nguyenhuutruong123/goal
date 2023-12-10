@@ -1,0 +1,17 @@
+scalar Long
+
+input PageBodyIn
+{
+    number: Int
+    size: Int
+    sortType: Int!
+    sorOrder: Int!
+}
+
+type PageBodyOut
+{
+    number: Int
+    size: Int
+    total: Int
+    count: Long
+}
