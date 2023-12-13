@@ -13,18 +13,13 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class GoalValueDTO {
     @NotNull
-    @JsonProperty("_id")
+    @JsonProperty("id")
     private Long id;
     @NotNull
     @JsonProperty("goal_id")
     private Long goalId;
 
     private String name;
-
-    private String type;
-
-    @JsonProperty("_index")
-    private String index;
 
     @JsonProperty("created_by")
     private String createdBy;

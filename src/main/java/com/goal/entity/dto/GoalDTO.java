@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class GoalDTO {
 
     @NotNull
-    @JsonProperty("_id")
+    @JsonProperty("id")
     private Long id;
 
     private String content;
@@ -33,5 +33,17 @@ public class GoalDTO {
 
     @JsonProperty("project_id")
     private String projectId;
+
+    @JsonProperty("situation_response")
+    private String situationResponse;
+
+    @JsonProperty("encounter")
+    private String encounter;
+
+    @JsonProperty("encounter_response")
+    private String encounterResponse;
+
+    @JsonProperty("organization_id")
+    private String organizationId;
 
 }

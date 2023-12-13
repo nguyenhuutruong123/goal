@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class GoalSituationDTO {
     @NotNull
-    @JsonProperty("_id")
+    @JsonProperty("id")
     private Long id;
     @NotNull
     @JsonProperty("goal_id")
