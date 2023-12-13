@@ -28,7 +28,7 @@ public class KafkaConsumer {
     ParentServiceImpl parentService;
 
 
-    @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals", partitions = {"0"}), groupId = "myGroup")
+   // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals", partitions = {"0"}), groupId = "myGroup")
     public void consumeGoals(ConsumerRecord<String, Object> record) {
         Gson gson = new Gson();
         try {
@@ -42,7 +42,7 @@ public class KafkaConsumer {
             throw new BusinessException(ex.getMessage());
         }
     }
-    @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_values", partitions = {"0"}), groupId = "myGroup")
+   // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_values", partitions = {"0"}), groupId = "myGroup")
     public void consumeGoalsValue(ConsumerRecord<String, Object> record) {
         Gson gson = new Gson();
         try {
@@ -56,7 +56,7 @@ public class KafkaConsumer {
             throw new BusinessException(ex.getMessage());
         }
     }
-    @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_behaviors", partitions = {"0"}), groupId = "myGroup")
+   // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_behaviors", partitions = {"0"}), groupId = "myGroup")
     public void consumeGoalsBehaviors(ConsumerRecord<String, Object> record) {
         Gson gson = new Gson();
         try {
@@ -70,7 +70,7 @@ public class KafkaConsumer {
             throw new BusinessException(ex.getMessage());
         }
     }
-    @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_situations", partitions = {"0"}), groupId = "myGroup")
+   // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_situations", partitions = {"0"}), groupId = "myGroup")
     public void consumeGoalsSituation(ConsumerRecord<String, Object> record) {
         Gson gson = new Gson();
         try {

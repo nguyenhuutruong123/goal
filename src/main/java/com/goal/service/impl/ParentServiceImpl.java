@@ -70,14 +70,7 @@ public class ParentServiceImpl implements ParentService {
                         // Now index the document
                         IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(goalStagingDTO.getId()+GlobalConstant.KEY_ID_GOAL + "")
                             .source(bytes, XContentType.JSON);
-                        IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-                        // Kiểm tra response để xác nhận rằng document đã được tạo thành công
-                        if (response.getResult() == IndexResponse.Result.CREATED || response.getResult() == IndexResponse.Result.UPDATED) {
-                            System.out.println("Child goal_value added successfully");
-                            return true;
-                        } else {
-                            System.out.println("Failed to add child goal_value");
-                        }
+                        client.index(indexRequest, RequestOptions.DEFAULT);
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -103,14 +96,8 @@ public class ParentServiceImpl implements ParentService {
                         IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId() + GlobalConstant.KEY_ID_GOAL_VALUE)
                             .source(bytes, XContentType.JSON)
                             .routing(input.getGoalId()+"");
-                        IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-                        // Kiểm tra response để xác nhận rằng document đã được tạo thành công
-                        if (response.getResult() == IndexResponse.Result.CREATED || response.getResult() == IndexResponse.Result.UPDATED) {
-                            System.out.println("Child goal_value added successfully");
-                            return true;
-                        } else {
-                            System.out.println("Failed to add child goal_value");
-                        }
+                        client.index(indexRequest, RequestOptions.DEFAULT);
+
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -134,14 +121,8 @@ public class ParentServiceImpl implements ParentService {
                         IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId() + GlobalConstant.KEY_ID_GOAL_BEHAVIOR)
                             .source(bytes, XContentType.JSON)
                             .routing(input.getGoalId()+"");
-                        IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-                        // Kiểm tra response để xác nhận rằng document đã được tạo thành công
-                        if (response.getResult() == IndexResponse.Result.CREATED || response.getResult() == IndexResponse.Result.UPDATED) {
-                            System.out.println("Child goal_value added successfully");
-                            return true;
-                        } else {
-                            System.out.println("Failed to add child goal_value");
-                        }
+                       client.index(indexRequest, RequestOptions.DEFAULT);
+
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -165,14 +146,7 @@ public class ParentServiceImpl implements ParentService {
                         IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId() + GlobalConstant.KEY_ID_GOAL_SITUATION)
                             .source(bytes, XContentType.JSON)
                             .routing(input.getGoalId()+"");
-                        IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-                        // Kiểm tra response để xác nhận rằng document đã được tạo thành công
-                        if (response.getResult() == IndexResponse.Result.CREATED || response.getResult() == IndexResponse.Result.UPDATED) {
-                            System.out.println("Child goal_value added successfully");
-                            return true;
-                        } else {
-                            System.out.println("Failed to add child goal_value");
-                        }
+                       client.index(indexRequest, RequestOptions.DEFAULT);
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -185,4 +159,5 @@ public class ParentServiceImpl implements ParentService {
         }
         return false;
     }
+
 }

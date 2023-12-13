@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class GoalBehaviorDTO {
     @NotNull
     @NotEmpty
-    @JsonProperty("_id")
+    @JsonProperty("id")
     private Long id;
 
     @NotNull
@@ -24,10 +24,6 @@ public class GoalBehaviorDTO {
 
     private String name;
 
-    private String type;
-
-    @JsonProperty("_index")
-    private String index;
 
     @JsonProperty("created_by")
     private String createdBy;

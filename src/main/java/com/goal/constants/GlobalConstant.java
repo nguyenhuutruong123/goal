@@ -12,11 +12,11 @@ public class GlobalConstant {
     public static final String TYPE_CHILD = "child";
     public static final String TYPE_PARENT = "parent";
 
-    public static final String KEY_ID_GOAL = "GOAL_ID_NAME_";
+    public static final String KEY_ID_GOAL = "_GOAL_ID_NAME_";
 
-    public static final String KEY_ID_GOAL_VALUE = "GOAL_VALUE_ID_NAME_";
+    public static final String KEY_ID_GOAL_VALUE = "_GOAL_VALUE_ID_NAME_";
 
-    public static final String KEY_ID_GOAL_BEHAVIOR = "GOAL_BEHAVIOR_ID_NAME_";
+    public static final String KEY_ID_GOAL_BEHAVIOR = "_GOAL_BEHAVIOR_ID_NAME_";
 
-    public static final String KEY_ID_GOAL_SITUATION = "GOAL_SITUATION_ID_NAME_";
+    public static final String KEY_ID_GOAL_SITUATION = "_GOAL_SITUATION_ID_NAME_";
 }
