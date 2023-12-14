@@ -58,7 +58,7 @@ public class ParentServiceImpl implements ParentService {
                 String json = CommonDataUtil.getModelMapperES().writeValueAsString(sourceMap);
                 byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
                 // Now index the document
-                IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(goalStagingDTO.getId() + GlobalConstant.KEY_ID_GOAL + "")
+                IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(goalStagingDTO.getId() + GlobalConstant.KEY_ID_GOAL )
                     .source(bytes, XContentType.JSON);
                 client.index(indexRequest, RequestOptions.DEFAULT);
             } catch (JsonProcessingException e) {
@@ -79,15 +79,16 @@ public class ParentServiceImpl implements ParentService {
         parentChildDTO.setData(input);
         try {
             Map<String, Object> sourceMap = convert(parentChildDTO);
-            JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_VALUE, input.getGoalId().toString() + GlobalConstant.KEY_ID_GOAL_VALUE);
+            String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
+            JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_VALUE, routing);
             sourceMap.put("join_field", joinField);
             try {
                 String json = CommonDataUtil.getModelMapperES().writeValueAsString(sourceMap);
                 byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
                 // Now index the document
-                IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId() + GlobalConstant.KEY_ID_GOAL_VALUE)
+                IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId().toString())
                     .source(bytes, XContentType.JSON)
-                    .routing(input.getGoalId() + "");
+                    .routing(routing);
                 client.index(indexRequest, RequestOptions.DEFAULT);
 
             } catch (JsonProcessingException e) {
@@ -108,15 +109,16 @@ public class ParentServiceImpl implements ParentService {
         parentChildDTO.setData(input);
         try {
             Map<String, Object> sourceMap = convert(parentChildDTO);
-            JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_BEHAVIOR, input.getGoalId());
+            String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
+            JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_BEHAVIOR, routing);
             sourceMap.put("join_field", joinField);
             try {
                 String json = CommonDataUtil.getModelMapperES().writeValueAsString(sourceMap);
                 byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
                 // Now index the document
-                IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId() + GlobalConstant.KEY_ID_GOAL_BEHAVIOR)
+                IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId().toString())
                     .source(bytes, XContentType.JSON)
-                    .routing(input.getGoalId() + "");
+                    .routing(routing);
                 client.index(indexRequest, RequestOptions.DEFAULT);
 
             } catch (JsonProcessingException e) {
@@ -137,7 +139,8 @@ public class ParentServiceImpl implements ParentService {
         parentChildDTO.setData(input);
         try {
             Map<String, Object> sourceMap = convert(parentChildDTO);
-            JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_SITUATION, input.getGoalId());
+            String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
+            JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_SITUATION,routing );
             sourceMap.put("join_field", joinField);
             try {
                 String json = CommonDataUtil.getModelMapperES().writeValueAsString(sourceMap);
@@ -145,7 +148,7 @@ public class ParentServiceImpl implements ParentService {
                 // Now index the document
                 IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(input.getId() + GlobalConstant.KEY_ID_GOAL_SITUATION)
                     .source(bytes, XContentType.JSON)
-                    .routing(input.getGoalId() + "");
+                    .routing(routing);
                 client.index(indexRequest, RequestOptions.DEFAULT);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -159,15 +162,15 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
-    public boolean saveGoal(Object object,String type) throws IOException {
+    public boolean saveGoal(Object object, String type) throws IOException {
         if ((object instanceof GoalDTO) && type.equals(PARENT_GOAL)) {
             return createGoal(object);
         } else {
-            if ((object instanceof GoalValueDTO)  && type.equals(CHILD_GOAL_VALUE)) {
+            if ((object instanceof GoalValueDTO) && type.equals(CHILD_GOAL_VALUE)) {
                 return createGoalValue(object);
-            } else if ((object instanceof GoalBehaviorDTO)  && type.equals(CHILD_GOAL_BEHAVIOR)) {
+            } else if ((object instanceof GoalBehaviorDTO) && type.equals(CHILD_GOAL_BEHAVIOR)) {
                 return createGoalBehavior(object);
-            } else if ((object instanceof GoalSituationDTO)  && type.equals(CHILD_GOAL_SITUATION)) {
+            } else if ((object instanceof GoalSituationDTO) && type.equals(CHILD_GOAL_SITUATION)) {
                 return createGoalSituation(object);
             }
         }
