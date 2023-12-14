@@ -1,22 +1,11 @@
 package com.goal.service.impl;
 
-import co.elastic.clients.elasticsearch._types.mapping.SourceField;
-import co.elastic.clients.elasticsearch.indices.PutMappingResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goal.common.utils.CommonDataUtil;
 import com.goal.constants.GlobalConstant;
 import com.goal.entity.dto.*;
 import com.goal.service.ParentService;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.xcontent.XContentType;
@@ -27,11 +16,9 @@ import org.springframework.data.elasticsearch.core.join.JoinField;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,7 +58,7 @@ public class ParentServiceImpl implements ParentService {
                 // Now index the document
                 IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(goalStagingDTO.getId() + GlobalConstant.KEY_ID_GOAL + "")
                     .source(bytes, XContentType.JSON);
-                IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
+                client.index(indexRequest, RequestOptions.DEFAULT);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
