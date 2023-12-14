@@ -30,28 +30,44 @@ public class PutDataController {
     @PostMapping("/add-data/goal")
     public ResponseEntity<RestResponse<Object>> saveGoal(@RequestBody List<GoalDTO> request) throws IOException {
         request.forEach(item->{
-           parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_PARENT);
+            try {
+                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_PARENT);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
     @PostMapping("/add-data/goal-value")
     public ResponseEntity<RestResponse<Object>> saveGoalValue(@RequestBody List<GoalValueDTO> request) throws IOException {
         request.forEach(item->{
-           parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+            try {
+                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
     @PostMapping("/add-data/goal-situation")
     public ResponseEntity<RestResponse<Object>> saveGoalSituation(@RequestBody List<GoalSituationDTO> request) throws IOException {
         request.forEach(item->{
-            parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+            try {
+                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
     @PostMapping("/add-data/goal-behavior")
     public ResponseEntity<RestResponse<Object>> saveGoalBehavior(@RequestBody List<GoalBehaviorDTO> request) throws IOException {
         request.forEach(item->{
-           parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+            try {
+                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }

@@ -1,12 +1,17 @@
 package com.goal.config;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.*;
 
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -21,6 +26,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import tech.jhipster.config.JHipsterProperties;
+
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Configuration of web application with Servlet 3.0 APIs.
@@ -64,16 +73,28 @@ public class WebConfigurer implements ServletContextInitializer {
 
 
     @Bean
-    public RestHighLevelClient restHighLevelClient() {
+    public RestHighLevelClient restHighLevelClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+//        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+//        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("", ""));
+//
+//        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"))
+//            .setHttpClientConfigCallback(httpClientBuilder -> {
+//                httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+//                return httpClientBuilder;
+//            });
+//
+//        return new RestHighLevelClient(builder);
+
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("dev", "GJAS!asdk123"));
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("", ""));
 
         RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"))
-            .setHttpClientConfigCallback(httpClientBuilder -> {
-                httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-                return httpClientBuilder;
-            });
+            .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
+            .setDefaultHeaders(compatibilityHeaders());
 
         return new RestHighLevelClient(builder);
+    }
+    private Header[] compatibilityHeaders() {
+        return new Header[]{new BasicHeader(HttpHeaders.ACCEPT, "application/vnd.elasticsearch+json;compatible-with=7"), new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/vnd.elasticsearch+json;compatible-with=7")};
     }
 }
