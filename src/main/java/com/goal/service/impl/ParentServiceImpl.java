@@ -21,6 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.goal.constants.GlobalConstant.*;
+
 /**
  * Service Implementation for managing {@link ParentService}.
  */
@@ -157,21 +159,17 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
-    public boolean saveGoal(Object object, String type) throws IOException {
-
-        if (type.equals(GlobalConstant.TYPE_PARENT)) {
-            if ((object instanceof GoalDTO)) {
-                return createGoal(object);
-            } else {
-                if ((object instanceof GoalValueDTO)) {
-                    return createGoalValue(object);
-                } else if ((object instanceof GoalBehaviorDTO)) {
-                    return createGoalBehavior(object);
-                } else if ((object instanceof GoalSituationDTO)) {
-                    return createGoalSituation(object);
-                }
+    public boolean saveGoal(Object object,String type) throws IOException {
+        if ((object instanceof GoalDTO) && type.equals(PARENT_GOAL)) {
+            return createGoal(object);
+        } else {
+            if ((object instanceof GoalValueDTO)  && type.equals(CHILD_GOAL_VALUE)) {
+                return createGoalValue(object);
+            } else if ((object instanceof GoalBehaviorDTO)  && type.equals(CHILD_GOAL_BEHAVIOR)) {
+                return createGoalBehavior(object);
+            } else if ((object instanceof GoalSituationDTO)  && type.equals(CHILD_GOAL_SITUATION)) {
+                return createGoalSituation(object);
             }
-            return false;
         }
         return true;
     }

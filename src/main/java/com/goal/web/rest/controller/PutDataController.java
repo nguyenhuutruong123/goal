@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 
+import static com.goal.constants.GlobalConstant.*;
+
 
 @RestController
 @RequestMapping("/api")
@@ -31,7 +33,7 @@ public class PutDataController {
     public ResponseEntity<RestResponse<Object>> saveGoal(@RequestBody List<GoalDTO> request) throws IOException {
         request.forEach(item->{
             try {
-                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_PARENT);
+                parentServiceImpl.saveGoal(item,PARENT_GOAL);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -42,7 +44,7 @@ public class PutDataController {
     public ResponseEntity<RestResponse<Object>> saveGoalValue(@RequestBody List<GoalValueDTO> request) throws IOException {
         request.forEach(item->{
             try {
-                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+                parentServiceImpl.saveGoal(item, CHILD_GOAL_VALUE);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -53,7 +55,7 @@ public class PutDataController {
     public ResponseEntity<RestResponse<Object>> saveGoalSituation(@RequestBody List<GoalSituationDTO> request) throws IOException {
         request.forEach(item->{
             try {
-                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+                parentServiceImpl.saveGoal(item, CHILD_GOAL_SITUATION);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -64,7 +66,7 @@ public class PutDataController {
     public ResponseEntity<RestResponse<Object>> saveGoalBehavior(@RequestBody List<GoalBehaviorDTO> request) throws IOException {
         request.forEach(item->{
             try {
-                parentServiceImpl.saveGoal(item, GlobalConstant.TYPE_CHILD);
+                parentServiceImpl.saveGoal(item, CHILD_GOAL_BEHAVIOR);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
