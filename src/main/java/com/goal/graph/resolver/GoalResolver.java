@@ -1,20 +1,20 @@
 package com.goal.graph.resolver;
 
-import com.goal.graph.model.GraphResponse;
-import com.goal.graph.model.request.PageBodyIn;
-import com.goal.graph.model.request.goal.SearchGoalFilter;
-import com.goal.graph.model.response.goal.GoalDTO;
-import com.goal.service.GoalService;
+import com.goal.elasticsearch.service.ElasticSearchGoalService;
+import com.goal.graph.model.response.goal.GoalResponseDTO;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.util.List;
+
 @Component
 @AllArgsConstructor
 public class GoalResolver implements GraphQLQueryResolver {
-    private final GoalService goalService;
+    private final ElasticSearchGoalService elasticSearchGoalService;
 
-    public GraphResponse<GoalDTO> getParentGoal(SearchGoalFilter filter, PageBodyIn page) {
-        return goalService.searchAllGoal(filter, page);
+    public List<GoalResponseDTO> getAllGoals(Integer page, Integer size) throws IOException {
+        return elasticSearchGoalService.getAllGoals(page, size);
     }
 }

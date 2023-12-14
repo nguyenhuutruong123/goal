@@ -1,0 +1,44 @@
+type AllGoalResponse {
+    id: Long
+    content: String
+    situationResponse: String
+    encounter: String
+    encounterResponse: String
+    projectId: Long
+    createdBy: String
+    createdDate: String
+    modifiedDate: String
+    modifiedBy: String
+    organizationId: Long
+    goalBehaviours: [GoalBehaviorDTO]
+    goalValues: [GoalValueDTO]
+    goalSituations: [GoalSituationDTO]
+}
+
+type GoalBehaviorDTO {
+    id: Long!
+    name: String!
+    createdBy: String
+    createdDate: String
+    modifiedBy: String
+    modifiedDate: String
+}
+
+type GoalValueDTO {
+    id: Long!
+    name: String!
+    createdBy: String
+    createdDate: String
+    modifiedBy: String
+    modifiedDate: String
+}
+
+type GoalSituationDTO {
+    id: Long!
+    name: String!
+    createdBy: String
+    createdDate: String
+    modifiedBy: String
+    modifiedDate: String
+}
+

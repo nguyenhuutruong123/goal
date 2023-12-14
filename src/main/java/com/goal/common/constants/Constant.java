@@ -12,4 +12,6 @@ public class Constant {
 
     public static String RESOURCE_IMAGES_ICON_URL = "/api/resources/images/icon/";
 
+    public static String BRACES = "{}";
+
 }

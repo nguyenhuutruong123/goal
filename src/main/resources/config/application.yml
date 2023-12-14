@@ -208,3 +208,11 @@ graphql:
     cors:
       allowed-origins: '*'
       allowed-methods: GET, HEAD, POST
+
+search:
+  elasticsearch:
+    host: localhost
+    port: 9200
+    user: elastic
+    password:
+    bufferResponse: 250
