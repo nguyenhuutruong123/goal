@@ -59,10 +59,6 @@ public class ParentServiceImpl implements ParentService {
     }
 
     public boolean createGoal(Object object) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // Disable timestamp-based serialization
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // Disable unknown property errors
         GoalDTO goalStagingDTO = CommonDataUtil.getModelMapper().map(object, GoalDTO.class);
         ParentChildDTO parentChildDTO = new ParentChildDTO();
         parentChildDTO.setData(goalStagingDTO);
@@ -70,13 +66,12 @@ public class ParentServiceImpl implements ParentService {
             Map<String, Object> sourceMap = convert(parentChildDTO);
             sourceMap.put("join_field", GlobalConstant.PARENT_GOAL);
             try {
-                String json = objectMapper.writeValueAsString(sourceMap);
+                String json = CommonDataUtil.getModelMapperES().writeValueAsString(sourceMap);
                 byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
                 // Now index the document
                 IndexRequest indexRequest = new IndexRequest(GlobalConstant.INDEX_GOAL).id(goalStagingDTO.getId() + GlobalConstant.KEY_ID_GOAL + "")
                     .source(bytes, XContentType.JSON);
                 IndexResponse response = client.index(indexRequest, RequestOptions.DEFAULT);
-                System.out.println(response);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             } catch (IOException e) {
