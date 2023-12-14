@@ -1,6 +1,9 @@
 package com.goal.common.utils;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.goal.constants.GlobalConstant;
 import com.google.gson.Gson;
 import com.goal.common.errors.BusinessException;
@@ -82,6 +85,14 @@ public class CommonDataUtil {
             modelMapper.getConfiguration().setSkipNullEnabled(true).setMatchingStrategy(MatchingStrategies.STRICT);
         }
         return modelMapper;
+    }
+
+    public static ObjectMapper getModelMapperES() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false); // Disable timestamp-based serialization
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // Disable unknown property errors
+        return objectMapper;
     }
     public static String convertObjectToStringJson(Object o) {
         try {
