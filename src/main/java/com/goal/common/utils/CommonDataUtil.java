@@ -86,7 +86,16 @@ public class CommonDataUtil {
         }
         return modelMapper;
     }
+    public static Map<String, Object> convert(Object object) throws IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        for (Field field : object.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value = field.get(object);
+            map.put(field.getName(), value);
+        }
 
+        return map;
+    }
     public static ObjectMapper getModelMapperES() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());

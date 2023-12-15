@@ -13,8 +13,12 @@ import co.elastic.clients.elasticsearch.core.search.InnerHitsResult;
 import co.elastic.clients.util.ObjectBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goal.common.utils.CommonDataUtil;
 import com.goal.common.utils.ProcessorDataMapper;
+import com.goal.constants.GlobalConstant;
 import com.goal.elasticsearch.model.ElasticSearchSourceDTO;
+import com.goal.entity.dto.GoalDTO;
+import com.goal.entity.dto.ParentChildDTO;
 import com.goal.graph.model.response.goal.GoalBehaviorDTO;
 import com.goal.graph.model.response.goal.GoalResponseDTO;
 import com.goal.graph.model.response.goal.GoalSituationDTO;
@@ -22,10 +26,14 @@ import com.goal.graph.model.response.goal.GoalValueDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.xcontent.XContentType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,4 +152,5 @@ public class ElasticSearchGoalServiceImpl implements ElasticSearchGoalService {
             throw new RuntimeException();
         }
     }
+
 }

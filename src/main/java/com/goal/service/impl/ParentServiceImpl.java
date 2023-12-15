@@ -36,23 +36,12 @@ public class ParentServiceImpl implements ParentService {
     private RestHighLevelClient client;
 
 
-    public static Map<String, Object> convert(Object object) throws IllegalAccessException {
-        Map<String, Object> map = new HashMap<>();
-        for (Field field : object.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            Object value = field.get(object);
-            map.put(field.getName(), value);
-        }
-
-        return map;
-    }
-
     public boolean createGoal(Object object) {
         GoalDTO goalStagingDTO = CommonDataUtil.getModelMapper().map(object, GoalDTO.class);
         ParentChildDTO parentChildDTO = new ParentChildDTO();
         parentChildDTO.setData(goalStagingDTO);
         try {
-            Map<String, Object> sourceMap = convert(parentChildDTO);
+            Map<String, Object> sourceMap = CommonDataUtil.convert(parentChildDTO);
             sourceMap.put("join_field", GlobalConstant.PARENT_GOAL);
             try {
                 String json = CommonDataUtil.getModelMapperES().writeValueAsString(sourceMap);
@@ -78,7 +67,7 @@ public class ParentServiceImpl implements ParentService {
         ParentChildDTO parentChildDTO = new ParentChildDTO();
         parentChildDTO.setData(input);
         try {
-            Map<String, Object> sourceMap = convert(parentChildDTO);
+            Map<String, Object> sourceMap = CommonDataUtil.convert(parentChildDTO);
             String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
             JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_VALUE, routing);
             sourceMap.put("join_field", joinField);
@@ -108,7 +97,7 @@ public class ParentServiceImpl implements ParentService {
         ParentChildDTO parentChildDTO = new ParentChildDTO();
         parentChildDTO.setData(input);
         try {
-            Map<String, Object> sourceMap = convert(parentChildDTO);
+            Map<String, Object> sourceMap = CommonDataUtil.convert(parentChildDTO);
             String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
             JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_BEHAVIOR, routing);
             sourceMap.put("join_field", joinField);
@@ -138,7 +127,7 @@ public class ParentServiceImpl implements ParentService {
         ParentChildDTO parentChildDTO = new ParentChildDTO();
         parentChildDTO.setData(input);
         try {
-            Map<String, Object> sourceMap = convert(parentChildDTO);
+            Map<String, Object> sourceMap = CommonDataUtil.convert(parentChildDTO);
             String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
             JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_SITUATION,routing );
             sourceMap.put("join_field", joinField);
