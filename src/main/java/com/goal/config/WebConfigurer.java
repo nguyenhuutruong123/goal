@@ -74,16 +74,6 @@ public class WebConfigurer implements ServletContextInitializer {
 
     @Bean
     public RestHighLevelClient restHighLevelClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-//        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-//        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("", ""));
-//
-//        RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"))
-//            .setHttpClientConfigCallback(httpClientBuilder -> {
-//                httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-//                return httpClientBuilder;
-//            });
-//
-//        return new RestHighLevelClient(builder);
 
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials("", ""));

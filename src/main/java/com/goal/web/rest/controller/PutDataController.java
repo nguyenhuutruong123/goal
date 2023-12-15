@@ -4,7 +4,6 @@ import com.goal.entity.dto.GoalBehaviorDTO;
 import com.goal.entity.dto.GoalDTO;
 import com.goal.entity.dto.GoalSituationDTO;
 import com.goal.entity.dto.GoalValueDTO;
-import com.goal.service.SearchService;
 import com.goal.service.impl.ParentServiceImpl;
 import com.goal.web.rest.payload.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,7 @@ import static com.goal.constants.GlobalConstant.PARENT_GOAL;
 @RestController
 @RequestMapping("/api")
 public class PutDataController {
-    @Autowired
-    private SearchService service;
+
 
     @Autowired
     private ParentServiceImpl parentServiceImpl;
