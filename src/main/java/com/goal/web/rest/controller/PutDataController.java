@@ -1,12 +1,12 @@
 package com.goal.web.rest.controller;
 
-import com.goal.elasticsearch.service.ElasticSearchGoalServiceImpl;
+import com.goal.elasticsearch.service.ElasticSearchGoalService;
 import com.goal.entity.dto.GoalBehaviorDTO;
 import com.goal.entity.dto.GoalDTO;
 import com.goal.entity.dto.GoalSituationDTO;
 import com.goal.entity.dto.GoalValueDTO;
 import com.goal.web.rest.payload.RestResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,60 +14,41 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
 
-import static com.goal.constants.GlobalConstant.CHILD_GOAL_BEHAVIOR;
-import static com.goal.constants.GlobalConstant.CHILD_GOAL_SITUATION;
-import static com.goal.constants.GlobalConstant.PARENT_GOAL;
+import static com.goal.common.constants.ElasticSearchConstants.GOAL_BEHAVIOR_INDEX_NAME;
+import static com.goal.common.constants.ElasticSearchConstants.GOAL_SITUATION_INDEX_NAME;
+import static com.goal.common.constants.ElasticSearchConstants.GOAL_VALUE_INDEX_NAME;
+import static com.goal.common.constants.ElasticSearchConstants.PARENT_GOAL;
 
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class PutDataController {
+    private final ElasticSearchGoalService elasticSearchGoalService;
 
-
-
-    @Autowired
-    private ElasticSearchGoalServiceImpl elasticSearchGoalServiceImpl;
     @PostMapping("/add-data/goal")
-    public ResponseEntity<RestResponse<Object>> saveGoal(@RequestBody List<GoalDTO> request) throws IOException {
-        request.forEach(item->{
-            try {
-                elasticSearchGoalServiceImpl.saveGoal(item,PARENT_GOAL);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public ResponseEntity<RestResponse<Object>> saveGoal(@RequestBody List<GoalDTO> request) {
+        request.forEach(item-> elasticSearchGoalService.saveGoal(item, PARENT_GOAL));
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
+
     @PostMapping("/add-data/goal-value")
-    public ResponseEntity<RestResponse<Object>> saveGoalValue(@RequestBody List<GoalValueDTO> request) throws IOException {
-        request.forEach(item->{
-            elasticSearchGoalServiceImpl.createGoalValue(item);
-        });
+    public ResponseEntity<RestResponse<Object>> saveGoalValue(@RequestBody List<GoalValueDTO> request) {
+        request.forEach(item-> elasticSearchGoalService.saveGoal(item, GOAL_VALUE_INDEX_NAME));
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
+
     @PostMapping("/add-data/goal-situation")
-    public ResponseEntity<RestResponse<Object>> saveGoalSituation(@RequestBody List<GoalSituationDTO> request) throws IOException {
-        request.forEach(item->{
-            try {
-                elasticSearchGoalServiceImpl.saveGoal(item, CHILD_GOAL_SITUATION);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public ResponseEntity<RestResponse<Object>> saveGoalSituation(@RequestBody List<GoalSituationDTO> request) {
+        request.forEach(item-> elasticSearchGoalService.saveGoal(item, GOAL_SITUATION_INDEX_NAME));
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
+
     @PostMapping("/add-data/goal-behavior")
-    public ResponseEntity<RestResponse<Object>> saveGoalBehavior(@RequestBody List<GoalBehaviorDTO> request) throws IOException {
-        request.forEach(item->{
-            try {
-                elasticSearchGoalServiceImpl.saveGoal(item, CHILD_GOAL_BEHAVIOR);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public ResponseEntity<RestResponse<Object>> saveGoalBehavior(@RequestBody List<GoalBehaviorDTO> request) {
+        request.forEach(item-> elasticSearchGoalService.saveGoal(item, GOAL_BEHAVIOR_INDEX_NAME));
         return ResponseEntity.status(HttpStatus.OK).body(RestResponse.builder().body(true).build());
     }
 }

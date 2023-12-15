@@ -1,0 +1,45 @@
+server:
+  port: 8093
+  compression:
+    enabled: true
+    mime-types: application/json
+    min-response-size: 1024
+
+spring:
+  banner:
+    location: classpath:banner/banner.txt
+  application:
+    name: product_da_sync
+  jmx:
+    enabled: false
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  kafka:
+    bootstrap-servers: kafka.test.yes4all.internal:9092
+    consumer:
+      group-id: myGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        debezium.format.json.infer.key: true
+        schema.registry.url: http:/schema-registry-port:8081
+
+graphql:
+  servlet:
+    mapping: /api/graphql
+    enabled: true
+    corsEnabled: true
+    cors:
+      allowed-origins: '*'
+      allowed-methods: GET, HEAD, POST
+
+search:
+  elasticsearch:
+    host: localhost
+    port: 9200
+    user: elastic
+    password:
+    bufferResponse: 250

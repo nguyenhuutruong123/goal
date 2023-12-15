@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.goal.common.utils.CommonDataUtil;
 import com.goal.common.utils.DateUtils;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 public class InstantDeserializer extends JsonDeserializer<Instant> {
     @Override
@@ -18,7 +18,7 @@ public class InstantDeserializer extends JsonDeserializer<Instant> {
         if (JsonToken.VALUE_STRING.equals(currentToken)) {
             String value = jsonParser.getValueAsString();
             Date date = DateUtils.formatDateTime(value);
-            return CommonDataUtil.isNotNull(date) ? date.toInstant() : null;
+            return !Objects.isNull(date) ? date.toInstant() : null;
         }
         return jsonParser.readValueAs(Instant.class);
     }

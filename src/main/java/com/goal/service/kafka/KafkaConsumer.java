@@ -2,82 +2,87 @@ package com.goal.service.kafka;
 
 
 import com.goal.common.errors.BusinessException;
-
-import com.goal.common.utils.CommonDataUtil;
-import com.goal.elasticsearch.service.ElasticSearchGoalServiceImpl;
-import com.goal.entity.*;
+import com.goal.common.utils.ProcessorDataMapper;
+import com.goal.elasticsearch.service.ElasticSearchGoalService;
+import com.goal.entity.Message;
+import com.goal.entity.Value;
 import com.goal.entity.dto.GoalBehaviorDTO;
 import com.goal.entity.dto.GoalDTO;
 import com.goal.entity.dto.GoalSituationDTO;
 import com.goal.entity.dto.GoalValueDTO;
 import com.google.gson.Gson;
-
+import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.goal.constants.GlobalConstant.*;
+import static com.goal.common.constants.ElasticSearchConstants.GOAL_BEHAVIOR_INDEX_NAME;
+import static com.goal.common.constants.ElasticSearchConstants.GOAL_SITUATION_INDEX_NAME;
+import static com.goal.common.constants.ElasticSearchConstants.GOAL_VALUE_INDEX_NAME;
+import static com.goal.common.constants.ElasticSearchConstants.PARENT_GOAL;
 
 
 @Service
+@AllArgsConstructor
 public class KafkaConsumer {
-
-    @Autowired
-    ElasticSearchGoalServiceImpl service;
+    private final ElasticSearchGoalService elasticSearchGoalService;
+    private final ProcessorDataMapper dataMapper;
 
 
    // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals", partitions = {"0"}), groupId = "myGroup")
-    public void consumeGoals(ConsumerRecord<String, Object> record) {
+    public void consumeGoals(ConsumerRecord<String, Object> consumerRecord) {
         Gson gson = new Gson();
         try {
-            String jsonString = record.value().toString();
+            String jsonString = consumerRecord.value().toString();
             Message message = gson.fromJson(jsonString, Message.class);
             Value after = message.getPayload().getAfter();
             GoalDTO goal = new GoalDTO();
-            CommonDataUtil.getModelMapper().map(after, goal);
-            service.saveGoal(goal, PARENT_GOAL);
+            dataMapper.map(after, goal);
+            elasticSearchGoalService.saveGoal(goal, PARENT_GOAL);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }
     }
+
    // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_values", partitions = {"0"}), groupId = "myGroup")
-    public void consumeGoalsValue(ConsumerRecord<String, Object> record) {
+    public void consumeGoalsValue(ConsumerRecord<String, Object> consumerRecord) {
         Gson gson = new Gson();
         try {
-            String jsonString = record.value().toString();
+            String jsonString = consumerRecord.value().toString();
             Message message = gson.fromJson(jsonString, Message.class);
             Value after = message.getPayload().getAfter();
             GoalValueDTO result = new GoalValueDTO();
-            CommonDataUtil.getModelMapper().map(after, result);
-            service.saveGoal(result, CHILD_GOAL_VALUE);
+            dataMapper.map(after, result);
+            elasticSearchGoalService.saveGoal(result, GOAL_VALUE_INDEX_NAME);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }
     }
+
    // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_behaviors", partitions = {"0"}), groupId = "myGroup")
-    public void consumeGoalsBehaviors(ConsumerRecord<String, Object> record) {
+    public void consumeGoalsBehaviors(ConsumerRecord<String, Object> consumerRecord) {
         Gson gson = new Gson();
         try {
-            String jsonString = record.value().toString();
+            String jsonString = consumerRecord.value().toString();
             Message message = gson.fromJson(jsonString, Message.class);
             Value after = message.getPayload().getAfter();
             GoalBehaviorDTO result = new GoalBehaviorDTO();
-            CommonDataUtil.getModelMapper().map(after, result);
-            service.saveGoal(result, CHILD_GOAL_BEHAVIOR);
+            dataMapper.map(after, result);
+            elasticSearchGoalService.saveGoal(result, GOAL_BEHAVIOR_INDEX_NAME);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }
     }
+
    // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals_goal_situations", partitions = {"0"}), groupId = "myGroup")
-    public void consumeGoalsSituation(ConsumerRecord<String, Object> record) {
+    public void consumeGoalsSituation(ConsumerRecord<String, Object> consumerRecord) {
         Gson gson = new Gson();
         try {
-            String jsonString = record.value().toString();
+            String jsonString = consumerRecord.value().toString();
             Message message = gson.fromJson(jsonString, Message.class);
             Value after = message.getPayload().getAfter();
             GoalSituationDTO result = new GoalSituationDTO();
-            CommonDataUtil.getModelMapper().map(after, result);
-            service.saveGoal(result, CHILD_GOAL_SITUATION);
+            dataMapper.map(after, result);
+            elasticSearchGoalService.saveGoal(result, GOAL_SITUATION_INDEX_NAME);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }

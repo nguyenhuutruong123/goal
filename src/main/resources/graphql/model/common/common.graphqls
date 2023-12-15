@@ -1,11 +1,9 @@
 scalar Long
 
-input PageBodyIn
+input PageBody
 {
-    number: Int
+    page: Int
     size: Int
-    sortType: Int!
-    sorOrder: Int!
 }
 
 type PageBodyOut

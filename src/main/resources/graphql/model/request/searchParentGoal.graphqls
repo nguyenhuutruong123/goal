@@ -1,4 +1,5 @@
-input SearchParentGoalFilter
+input SearchGoalFilter
 {
-    goalIds: [Long]!
+    goalId: Long!
+    name: String
 }
