@@ -7,7 +7,7 @@ public class GlobalConstant {
     public static final String CHILD_GOAL_VALUE = "goal_value";
     public static final String CHILD_GOAL_BEHAVIOR = "goal_behavior";
     public static final String CHILD_GOAL_SITUATION = "goal_situation";
-    public static final String INDEX_GOAL = "staging_document_goal";
+    public static final String INDEX_GOAL = "document_goal_stagging";
     public static final String PARENT_GOAL = "goals";
     public static final String TYPE_CHILD = "child";
     public static final String TYPE_PARENT = "parent";

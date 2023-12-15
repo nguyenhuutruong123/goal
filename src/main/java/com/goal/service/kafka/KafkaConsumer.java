@@ -4,20 +4,16 @@ package com.goal.service.kafka;
 import com.goal.common.errors.BusinessException;
 
 import com.goal.common.utils.CommonDataUtil;
-import com.goal.constants.GlobalConstant;
+import com.goal.elasticsearch.service.ElasticSearchGoalServiceImpl;
 import com.goal.entity.*;
 import com.goal.entity.dto.GoalBehaviorDTO;
 import com.goal.entity.dto.GoalDTO;
 import com.goal.entity.dto.GoalSituationDTO;
 import com.goal.entity.dto.GoalValueDTO;
-import com.goal.service.impl.ParentServiceImpl;
 import com.google.gson.Gson;
 
-import liquibase.pro.packaged.G;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Service;
 
 import static com.goal.constants.GlobalConstant.*;
@@ -27,7 +23,7 @@ import static com.goal.constants.GlobalConstant.*;
 public class KafkaConsumer {
 
     @Autowired
-    ParentServiceImpl parentService;
+    ElasticSearchGoalServiceImpl service;
 
 
    // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals", partitions = {"0"}), groupId = "myGroup")
@@ -39,7 +35,7 @@ public class KafkaConsumer {
             Value after = message.getPayload().getAfter();
             GoalDTO goal = new GoalDTO();
             CommonDataUtil.getModelMapper().map(after, goal);
-            parentService.saveGoal(goal, PARENT_GOAL);
+            service.saveGoal(goal, PARENT_GOAL);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }
@@ -53,7 +49,7 @@ public class KafkaConsumer {
             Value after = message.getPayload().getAfter();
             GoalValueDTO result = new GoalValueDTO();
             CommonDataUtil.getModelMapper().map(after, result);
-            parentService.saveGoal(result, CHILD_GOAL_VALUE);
+            service.saveGoal(result, CHILD_GOAL_VALUE);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }
@@ -67,7 +63,7 @@ public class KafkaConsumer {
             Value after = message.getPayload().getAfter();
             GoalBehaviorDTO result = new GoalBehaviorDTO();
             CommonDataUtil.getModelMapper().map(after, result);
-            parentService.saveGoal(result, CHILD_GOAL_BEHAVIOR);
+            service.saveGoal(result, CHILD_GOAL_BEHAVIOR);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }
@@ -81,7 +77,7 @@ public class KafkaConsumer {
             Value after = message.getPayload().getAfter();
             GoalSituationDTO result = new GoalSituationDTO();
             CommonDataUtil.getModelMapper().map(after, result);
-            parentService.saveGoal(result, CHILD_GOAL_SITUATION);
+            service.saveGoal(result, CHILD_GOAL_SITUATION);
         } catch (Exception ex) {
             throw new BusinessException(ex.getMessage());
         }

@@ -6,6 +6,7 @@ import co.elastic.clients.elasticsearch._types.SortMode;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.core.IndexRequest;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
@@ -18,7 +19,8 @@ import com.goal.common.utils.ProcessorDataMapper;
 import com.goal.constants.GlobalConstant;
 import com.goal.elasticsearch.model.ElasticSearchSourceDTO;
 import com.goal.entity.dto.GoalDTO;
-import com.goal.entity.dto.ParentChildDTO;
+import com.goal.entity.dto.ChildDTO;
+import com.goal.entity.dto.ParentDTO;
 import com.goal.graph.model.response.goal.GoalBehaviorDTO;
 import com.goal.graph.model.response.goal.GoalResponseDTO;
 import com.goal.graph.model.response.goal.GoalSituationDTO;
@@ -26,14 +28,11 @@ import com.goal.graph.model.response.goal.GoalValueDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.xcontent.XContentType;
+import org.springframework.data.elasticsearch.core.join.JoinField;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,8 @@ import static com.goal.common.constants.ElasticSearchConstants.GOAL_SITUATION_IN
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_SORT_FIELD;
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_VALUE_INDEX_NAME;
 import static com.goal.common.constants.ElasticSearchConstants.NESTED_DATA_FIELD;
+import static com.goal.constants.GlobalConstant.*;
+import static com.goal.constants.GlobalConstant.CHILD_GOAL_SITUATION;
 
 
 @Slf4j
@@ -94,17 +95,17 @@ public class ElasticSearchGoalServiceImpl implements ElasticSearchGoalService {
 
     private Function<Query.Builder, ObjectBuilder<Query>> buildQuerySearchGoalFunc() {
         return q -> q.bool(b ->
-                b.must(buildMustBuilderFunc(GOAL_VALUE_INDEX_NAME))
-                    .must(buildMustBuilderFunc(GOAL_BEHAVIOR_INDEX_NAME))
-                    .must(buildMustBuilderFunc(GOAL_SITUATION_INDEX_NAME))
+            b.must(buildMustBuilderFunc(GOAL_VALUE_INDEX_NAME))
+                .must(buildMustBuilderFunc(GOAL_BEHAVIOR_INDEX_NAME))
+                .must(buildMustBuilderFunc(GOAL_SITUATION_INDEX_NAME))
         );
     }
 
     private Function<Query.Builder, ObjectBuilder<Query>> buildMustBuilderFunc(String index) {
         return m -> m.hasChild(hc ->
-                hc.type(index)
-                    .query(hcq -> hcq.matchAll(ma -> ma.queryName(StringUtils.EMPTY)))
-                    .innerHits(inh -> inh.withJson(new StringReader(BRACES)))
+            hc.type(index)
+                .query(hcq -> hcq.matchAll(ma -> ma.queryName(StringUtils.EMPTY)))
+                .innerHits(inh -> inh.withJson(new StringReader(BRACES)))
         );
     }
 
@@ -131,6 +132,105 @@ public class ElasticSearchGoalServiceImpl implements ElasticSearchGoalService {
         };
     }
 
+    public boolean createGoalValue(Object object) {
+
+        com.goal.entity.dto.GoalValueDTO input = CommonDataUtil.getModelMapper().map(object, com.goal.entity.dto.GoalValueDTO.class);
+        ChildDTO parentChildDTO = new ChildDTO();
+        parentChildDTO.setData(input);
+        String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
+        JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_VALUE, routing);
+        parentChildDTO.setJoin_field(joinField);
+        try {
+            IndexRequest.Builder<ChildDTO> indexRequest = new IndexRequest.Builder<>();
+            indexRequest.id(input.getId().toString());
+            indexRequest.document(parentChildDTO);
+            indexRequest.routing(routing);
+            indexRequest.index(GlobalConstant.INDEX_GOAL);
+            elasticsearchClient.index(indexRequest.build());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public boolean createGoal(Object object) {
+
+        GoalDTO input = CommonDataUtil.getModelMapper().map(object, GoalDTO.class);
+        ParentDTO parentDTO = new ParentDTO();
+        parentDTO.setData(input);
+        parentDTO.setJoin_field(PARENT_GOAL);
+        try {
+            IndexRequest.Builder<ParentDTO> indexRequest = new IndexRequest.Builder<>();
+            indexRequest.id(input.getId() + GlobalConstant.KEY_ID_GOAL);
+            indexRequest.document(parentDTO);
+            indexRequest.index(GlobalConstant.INDEX_GOAL);
+            elasticsearchClient.index(indexRequest.build());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public boolean createGoalBehavior(Object object) {
+
+        com.goal.entity.dto.GoalBehaviorDTO input = CommonDataUtil.getModelMapper().map(object, com.goal.entity.dto.GoalBehaviorDTO.class);
+        ChildDTO parentChildDTO = new ChildDTO();
+        parentChildDTO.setData(input);
+        String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
+        JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_BEHAVIOR, routing);
+        parentChildDTO.setJoin_field(joinField);
+        try {
+            IndexRequest.Builder<ChildDTO> indexRequest = new IndexRequest.Builder<>();
+            indexRequest.id(input.getId().toString());
+            indexRequest.document(parentChildDTO);
+            indexRequest.routing(routing);
+            indexRequest.index(GlobalConstant.INDEX_GOAL);
+            elasticsearchClient.index(indexRequest.build());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public boolean createGoalSituation(Object object) {
+
+        com.goal.entity.dto.GoalSituationDTO input = CommonDataUtil.getModelMapper().map(object, com.goal.entity.dto.GoalSituationDTO.class);
+        ChildDTO parentChildDTO = new ChildDTO();
+        parentChildDTO.setData(input);
+        String routing = input.getGoalId() + GlobalConstant.KEY_ID_GOAL;
+        JoinField joinField = new JoinField(GlobalConstant.CHILD_GOAL_SITUATION, routing);
+        parentChildDTO.setJoin_field(joinField);
+        try {
+            IndexRequest.Builder<ChildDTO> indexRequest = new IndexRequest.Builder<>();
+            indexRequest.id(input.getId().toString());
+            indexRequest.document(parentChildDTO);
+            indexRequest.routing(routing);
+            indexRequest.index(GlobalConstant.INDEX_GOAL);
+            elasticsearchClient.index(indexRequest.build());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public boolean saveGoal(Object object, String type) throws IOException {
+        if ((object instanceof GoalDTO) && type.equals(PARENT_GOAL)) {
+            return createGoal(object);
+        } else {
+            if ((object instanceof com.goal.entity.dto.GoalValueDTO) && type.equals(CHILD_GOAL_VALUE)) {
+                return createGoalValue(object);
+            } else if ((object instanceof com.goal.entity.dto.GoalBehaviorDTO) && type.equals(CHILD_GOAL_BEHAVIOR)) {
+                return createGoalBehavior(object);
+            } else if ((object instanceof com.goal.entity.dto.GoalSituationDTO) && type.equals(CHILD_GOAL_SITUATION)) {
+                return createGoalSituation(object);
+            }
+        }
+        return true;
+    }
     private <T> List<T> buildGoalValues(InnerHitsResult innerHitsResult, Class<T> esClazz) {
         return innerHitsResult.hits().hits()
             .stream().map(Hit::source)

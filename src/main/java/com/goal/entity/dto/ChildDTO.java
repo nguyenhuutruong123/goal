@@ -9,10 +9,11 @@ import org.springframework.data.elasticsearch.core.join.JoinField;
 
 @Getter
 @Setter
-public class ParentChildDTO {
+public class ChildDTO {
 
     private Object data;
     @Field(type = FieldType.Object, name = "join_field")
-    private JoinField joinField;
+    private JoinField join_field;
+
 
 }
