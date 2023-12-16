@@ -7,8 +7,6 @@
         </encoder>
     </appender>
 
-    <springProperty scope="context" name="applicationName" source="spring.application.name" />
-
     <appender name="SAVE-TO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/${applicationName}.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -23,8 +21,9 @@
     </appender>
 
     <logger name="com.goal" level="INFO"/>
+    <logger name="org.springframework.data.elasticsearch.core.query" level="INFO"/>
 
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="SAVE-TO-FILE" />
         <appender-ref ref="STDOUT" />
     </root>

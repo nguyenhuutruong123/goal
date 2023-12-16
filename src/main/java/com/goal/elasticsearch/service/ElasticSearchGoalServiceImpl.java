@@ -5,8 +5,9 @@ import co.elastic.clients.elasticsearch._types.NestedSortValue;
 import co.elastic.clients.elasticsearch._types.SortMode;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.NestedQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
 import co.elastic.clients.elasticsearch.core.IndexRequest;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -45,14 +46,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.goal.common.constants.Constants.BRACES;
+import static com.goal.common.constants.ElasticSearchConstants.FILTER_GOAL_ID_FIELD;
+import static com.goal.common.constants.ElasticSearchConstants.FILTER_NAME_FIELD;
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_BEHAVIOR_INDEX_NAME;
-import static com.goal.common.constants.ElasticSearchConstants.GOAL_ID_FIELD;
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_INDEX_NAME;
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_SITUATION_INDEX_NAME;
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_SORT_FIELD;
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_VALUE_INDEX_NAME;
 import static com.goal.common.constants.ElasticSearchConstants.KEY_ID_GOAL;
-import static com.goal.common.constants.ElasticSearchConstants.NAME_FIELD;
 import static com.goal.common.constants.ElasticSearchConstants.NESTED_DATA_FIELD;
 import static com.goal.common.constants.ElasticSearchConstants.PARENT_GOAL;
 
@@ -101,31 +102,35 @@ public class ElasticSearchGoalServiceImpl implements ElasticSearchGoalService {
 
     private Function<Query.Builder, ObjectBuilder<Query>> buildQuerySearchGoalFunc(SearchGoalFilter filter) {
         return q -> q.bool(b ->
-                b.must(buildMustBuilderFunc(GOAL_VALUE_INDEX_NAME, filter))
-                    .must(buildMustBuilderFunc(GOAL_BEHAVIOR_INDEX_NAME, filter))
-                    .must(buildMustBuilderFunc(GOAL_SITUATION_INDEX_NAME, filter))
+                b.should(buildMustBuilderFunc(GOAL_VALUE_INDEX_NAME, filter))
+                    .should(buildMustBuilderFunc(GOAL_BEHAVIOR_INDEX_NAME, filter))
+                    .should(buildMustBuilderFunc(GOAL_SITUATION_INDEX_NAME, filter))
         );
     }
 
     private Function<Query.Builder, ObjectBuilder<Query>> buildMustBuilderFunc(String index, SearchGoalFilter filter) {
         return m -> m.hasChild(hc ->
                 hc.type(index)
-                    .query(hcq -> hcq.matchAll(ma -> ma.queryName(StringUtils.EMPTY)))
-                    .innerHits(inh -> inh.withJson(new StringReader(BRACES)))
+                        .query(q -> q.nested(buildNestedBuilderFunc(filter)))
+                        .innerHits(inh -> inh.withJson(new StringReader(BRACES)))
         );
     }
 
-    private Function<TermQuery.Builder, ObjectBuilder<TermQuery>> buildTermBuilderFunc(SearchGoalFilter filter) {
+    private Function<NestedQuery.Builder, ObjectBuilder<NestedQuery>> buildNestedBuilderFunc(SearchGoalFilter filter) {
+        return nested -> nested.path(NESTED_DATA_FIELD).query(q -> q.bool(buildQueryFilterFunc(filter)));
+    }
+
+    private Function<BoolQuery.Builder, ObjectBuilder<BoolQuery>> buildQueryFilterFunc(SearchGoalFilter filter) {
         Long goalId = filter.getGoalId();
         String name = filter.getName();
-        return term -> {
+        return bool -> {
             if (Objects.nonNull(goalId)) {
-                term.field(GOAL_ID_FIELD).value(goalId);
+                bool.must(must -> must.match(m -> m.field(FILTER_GOAL_ID_FIELD).query(goalId)));
             }
             if (StringUtils.isNotEmpty(name)) {
-                term.field(NAME_FIELD).value(name);
+                bool.must(must -> must.match(m -> m.field(FILTER_NAME_FIELD).query(name)));
             }
-            return term;
+            return bool;
         };
     }
 

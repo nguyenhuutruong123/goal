@@ -43,3 +43,5 @@ search:
     user: elastic
     password:
     bufferResponse: 250
+
+logging.config: classpath:logback.xml
