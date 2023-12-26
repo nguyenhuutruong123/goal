@@ -13,6 +13,8 @@ import com.goal.entity.dto.GoalValueDTO;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Service;
 
 import static com.goal.common.constants.ElasticSearchConstants.GOAL_BEHAVIOR_INDEX_NAME;
@@ -28,7 +30,7 @@ public class KafkaConsumer {
     private final ProcessorDataMapper dataMapper;
 
 
-   // @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals", partitions = {"0"}), groupId = "myGroup")
+    @KafkaListener(topicPartitions = @TopicPartition(topic = "json.be_account.goals", partitions = {"0"}), groupId = "myGroup")
     public void consumeGoals(ConsumerRecord<String, Object> consumerRecord) {
         Gson gson = new Gson();
         try {
